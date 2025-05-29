@@ -259,7 +259,6 @@ class GitHubController {
         }
       }
 
-      console.log("commitData: ", commitData)
     } catch (error) {
       console.error(`Error syncing commits for ${repository.fullName}:`, error);
     }
