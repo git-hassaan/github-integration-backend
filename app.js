@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-// Load environment variables
+// Load .env file
 dotenv.config();
 
 // Initialize Express app
@@ -12,36 +12,35 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:4200', // Angular app URL
+  origin: 'http://localhost:4200',
   credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/github_integration';
+const MONGODB_URI = process.env.MONGODB_URI;
 mongoose.connect(MONGODB_URI)
-.then(() => {
-  console.log('Connected to MongoDB');
-})
-.catch((error) => {
-  console.error('MongoDB connection error:', error);
-});
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('MongoDB connection error:', error);
+  });
 
-// Import routes
+// Routes
 const authRoutes = require('./routes/auth');
 const githubRoutes = require('./routes/github');
 const integrationRoutes = require('./routes/integration');
 
-// Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/github', githubRoutes);
 app.use('/api/integration', integrationRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'GitHub Integration API Server is running',
     timestamp: new Date().toISOString()
   });
